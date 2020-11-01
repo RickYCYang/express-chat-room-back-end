@@ -28,14 +28,17 @@ app.set('secret', config.secret);
 var jwt = require('jsonwebtoken')
 
 /* 允許跨域服務 */
+const prodHostName = 'https://express-chat-room-back-end.herokuapp.com';
+const devHostName = 'http://localhost:3001';
+
 var cors = require('cors');
-app.use(cors({origin: 'https://express-chat-room-back-end.herokuapp.com', credentials: true}));
+app.use(cors({origin: devHostName, credentials: true}));
 
 app.all('*',function (req, res, next) {
     //res.header('Access-Control-Allow-Origin', '*');
     //res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild');
     //res.header('Access-Control-Allow-Origin', req.headers.origin);
-    res.setHeader('Access-Control-Allow-Origin', 'https://express-chat-room-back-end.herokuapp.com');//'http://localhost:3001';
+    res.setHeader('Access-Control-Allow-Origin', req.headers.origin);//'http://localhost:3001';
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
     res.header('Access-Control-Allow-Credentials', true);
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,UPDATE,OPTIONS');
