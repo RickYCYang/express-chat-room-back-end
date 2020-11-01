@@ -23,7 +23,7 @@ router.get("/", function(req, res){
         })
     }else{
         console.log("you have no token");
-        res.sendfile('public/html/login.html');
+        res.sendFile('public/html/login.html');
     }
     /*
     if(req.session.uid){

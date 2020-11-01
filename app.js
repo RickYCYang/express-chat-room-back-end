@@ -29,19 +29,6 @@ var jwt = require('jsonwebtoken')
 
 /* 允許跨域服務 */
 var cors = require('cors');
-//app.options('*', cors());
-/*
-app.use(cors((req, res) => {
-  console.log(req.headers.origin);
-  return (
-    {
-      origin: 'http://localhost:3001', 
-      credentials: true
-    }
-  )
-  //origin: 'http://localhost:3001', credentials: true
-}));
-*/
 app.use(cors({origin: 'http://localhost:3001', credentials: true}));
 
 app.all('*',function (req, res, next) {
@@ -102,17 +89,6 @@ app.use(function (req, res, next) {
   }
 });
 
-
-var employee = require("./routes/employee.js");
-app.use("/employee", employee);
-
-// catch 404 and forward to error handler
-/*
-app.get('*', (req, res) =>
-  res.redirect('/')
-);
-*/
-
 // 當發生連線事件
 let onlineCount = 0;
 io.on('connection', (socket) => {
@@ -148,5 +124,5 @@ var port = process.env.PORT || 3000;
 // 注意，這邊的 server 原本是 app
 //app.listen(port);
 socketServer.listen(port, () => {
-  console.log("Server Started. http://localhost:4000");
+  console.log("Server Started on ", port);
 });
