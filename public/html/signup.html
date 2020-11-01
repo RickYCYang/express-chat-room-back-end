@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Willis Employee Leave System</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</head>
+<style>
+  #logo {
+    text-align: center;
+    display:block; 
+    margin:auto;
+    font-size: 30px;
+    margin-bottom: 40px;
+  }
+  #login-form{
+    margin-top: 100px;
+    border-radius: 20px 20px 20px 20px;
+    box-shadow: 2px 2px 2px 2px lightgray;
+    background-color: white;
+    padding-bottom: 30px;
+  }
+  #signupForm{
+    text-align: center;
+    display:block; 
+    margin:auto;
+  }
+  .newBtn{
+    margin-top: 30px;
+    width: 100px;
+    display: inline-block;
+  }
+
+</style>
+<script>
+window.onload = function(){
+    let submit = document.querySelector("#submit-btn");
+    let msg = document.querySelector("#msg");
+
+    //Submit Button Click Event;
+    submit.addEventListener("click", () => { 
+        let email = document.querySelector("#email").value;
+        let password = document.querySelector("#password").value;
+        let nickname = document.querySelector("#nickname").value;
+        let confirmPassword = document.querySelector("#confirmPassword").value;
+        if(password != confirmPassword){
+            msg.style.display = "block";
+            msg.innerHTML = "密碼輸入不同，請重新確認密碼";
+        }else{
+            let data = {
+                "email": email,
+                "password": password,
+                "nickname": nickname
+            }
+            fetch("/signup", {
+                method: 'POST', // or 'PUT'
+                body: JSON.stringify(data), // data can be `string` or {object}!
+                headers: new Headers({
+                    'Content-Type': 'application/json'
+                }),
+                credentials: 'include'
+            }).then((response) => {
+                return response.json();
+            }).then((result) => {
+                if(result.result == "success"){
+                    msg.innerHTML = "Success!";
+                    msg.classList.remove("alert-danger");
+                    msg.classList.add("alert-primary");
+                }else{
+                    msg.innerHTML = result.message;
+                }
+                msg.style.display = "block";
+                console.log(result);
+            }).catch((error) => {
+                console.log(error);
+            });
+        }
+    });
+}
+</script>
+<body id="body" style="background-color: #f0f3f9;">
+    <div class="container">
+        <div class="row">
+          <div class="col-3">
+          </div>
+          <div class="col-6">
+            <div id="login-form">
+                <img id="logo" src="../Images/logo.jpg"/>
+                <p id="logo">Register to Willis Human Leave System</p>
+                <form id="signupForm">
+                    <div class="form-group row">
+                        <label for="account" class="col-4 col-form-label" style="text-align: right;">Nickname</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="nickname" name="nickname" placeholder="Aris">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="email" class="col-4 col-form-label" style="text-align: right;">Email</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="email" name="email" placeholder="ArisLien@gmail.com">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="password" class="col-4 col-form-label" style="text-align: right;">Password</label>
+                        <div class="col-sm-6">
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                    </div>
+                    </div>
+                    <div class="form-group row" style="margin-bottom: 30px;">
+                        <label for="confirmPassword" class="col-4 col-form-label" style="text-align: right;">Confirm Password</label>
+                        <div class="col-sm-6">
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password">
+                        </div>
+                    </div>
+                    <div class="alert alert-danger" id="msg" style="font-size: 13px;display: none;"></div>
+                    <div>
+                        <input type="button" class="btn btn-info newBtn" id="submit-btn" style="margin-top: 10px" value="註冊" />
+                        <a href="/login" class="btn btn-info newBtn" style="margin-top: 10px;">登入</a>
+                    </div>
+                </form>
+            </div>
+          </div>
+          <div class="col-3">
+          </div>
+        </div>
+      </div>
+</body>
+</html>
