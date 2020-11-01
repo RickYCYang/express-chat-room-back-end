@@ -1,5 +1,5 @@
 {
-  "name": "willis_emp_leave",
+  "name": "chat-room-backend",
   "version": "1.0.0",
   "engines": {
     "node": "10.16.3"
@@ -7,6 +7,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
