@@ -120,6 +120,7 @@ io.on('connection', (socket) => {
  
     // 廣播訊息到聊天室
     io.emit("msg", msg);
+    //socket.broadcast.emit('getMessageLess', message)
 });
 });
 
