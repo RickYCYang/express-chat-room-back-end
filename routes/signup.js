@@ -7,30 +7,33 @@ var firebase = require('../connections/firebase_connect.js');
 var firebaseAuth = firebase.auth();
 var firebaseAdmin = require("../connections/firebase_admin_connect.js");
 
-router.get('/', function (req, res) {
-    res.sendfile('public/html/signup.html');
-});
-
 router.post('/', function (req, res) {
     var email = req.body.email;
     var password = req.body.password;
-    var nickname = req.body.nickname;
-    
+    var userName = req.body.userName;
+    let result = {
+        status: '',
+        message: '',
+    }
+    console.log(email, password, userName);
     firebaseAuth.createUserWithEmailAndPassword(email, password).then((user) => {
         var uid = user.user.uid
         let saveUser = {
             "email": email,
             "password": password,
-            "nickname": nickname,
+            "nickname": userName,
             "uid": uid
         };
         firebaseAdmin.ref("/user/" + uid).set(saveUser);
         console.log("saveUser", saveUser);
-        user["result"] = "success";
-        res.send(user);
+        result.status = 'success';
+        res.send(result);
     }).catch((error) => {
-        error["result"] = "error";
-        res.send(error);
+        error["status"] = "error";
+        result.status = 'error';
+        result.message = error.message;
+        console.log('error', result);
+        res.send(result);
     });
-})
+});
 module.exports = router;

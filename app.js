@@ -13,7 +13,6 @@ app.use(session({ secret: 'mysupersecret', resave: true, saveUninitialized: true
 
 //Cookie
 var cookieParser = require('cookie-parser');
-app.use(cookieParser("secret"));
 
 //Body Parser
 var bodyParser = require("body-parser");
@@ -72,9 +71,11 @@ app.use('/signup', signup);
 var router = require('./routes/index.js');
 app.use('/', router);
 
+app.use(cookieParser());
 /* Middleware to check if the header in user's request contains the authroized token */
 app.use(function (req, res, next) {
-  var token = req.headers["authorization"];  //req.cookies.token;//req.body.token || req.query.token || req.headers['x-access-token']
+  console.log('middleware', req.cookies);
+  var token = req.cookies.token  //req.cookies.token;//req.body.token || req.query.token || req.headers['x-access-token']
   if (token) {
     jwt.verify(token, app.get('secret'), function (err, decoded) {
       if (err) {
@@ -92,37 +93,7 @@ app.use(function (req, res, next) {
   }
 });
 
-// 當發生連線事件
-let onlineCount = 0;
-io.on('connection', (socket) => {
-  // 有連線發生時增加人數
-  //console.log(socket.nsp);
-  onlineCount++;
-  // 發送人數給網頁
-  console.log('onlineCount', onlineCount);
-  io.emit("online", onlineCount);
-
-  socket.on("greet", () => {
-      socket.emit("greet", onlineCount);
-  });
-
-  socket.on('disconnect', () => {
-      // 有人離線了，扣人
-      onlineCount = (onlineCount < 0) ? 0 : onlineCount-=1;
-      io.emit("online", onlineCount);
-  });
-
-  socket.on("send", (msg) => {
-    /// 如果 msg 內容鍵值小於 2 等於是訊息傳送不完全
-    // 因此我們直接 return ，終止函式執行。
-    console.log('msg', msg);
-    if (Object.keys(msg).length < 2 || msg.message === '') return;
- 
-    // 廣播訊息到聊天室
-    io.emit("msg", msg);
-    //socket.broadcast.emit('getMessageLess', message)
-});
-});
+require('./chatRoomListener')(io);
 
 var port = process.env.PORT || 3000;
 // 注意，這邊的 server 原本是 app

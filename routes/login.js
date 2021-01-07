@@ -11,11 +11,6 @@ var firebaseAuth = firebase.auth();
 var jwt = require('jsonwebtoken');
 
 
-router.get('/', function (req, res) {
-    res.sendfile('public/html/login.html');
-});
-
-
 router.post('/', function (req, res) {
     var email = req.body.email;
     var password = req.body.password;
@@ -27,18 +22,16 @@ router.post('/', function (req, res) {
         /* Create JWT */
         let token = jwt.sign(user, secret, {expiresIn: 60*60*24});
         /* Set Cookie */
-        res.cookie('token', token, { maxAge: 24 * 60 * 60 * 1000, httpOnly: false }); //Expire after 2 hours
+        res.cookie('token', token, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true }); //Expire after 2 hours
         /* Set User Name */
-        let nickname;
         firebaseAdmin.ref(`user/${user.user.uid}/nickname`).once("value", (snapshot) => {
-            console.log('nickname', snapshot.val());
-            nickname = snapshot.val();
-            res.cookie('userName', nickname, { maxAge: 24 * 60 * 60 * 1000, httpOnly: false }); //Expire after 2 hours
+            const userName = snapshot.val();
+            res.cookie('userName', userName, { maxAge: 24 * 60 * 60 * 1000, httpOnly: false }); //Expire after 2 hours
             /* Response */
             res.send({
                 status: "success",
                 uid: user.user.uid,
-                userName: nickname,
+                userName: userName,
                 token: token
             });
         });
