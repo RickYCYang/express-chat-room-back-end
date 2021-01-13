@@ -46,6 +46,7 @@ const chatRoomListener = async(io) => {
                 if (Object.keys(message).length < 2 || message.message === '') return;
             
                 if(message.targetUser === 'Public'){
+                    //console.log(message);
                     io.emit("newPublicMessage", message);
                 }else{
                     io.to(userList[message.sourceUser].socketId).emit('newPrivateMessage', message);
