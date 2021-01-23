@@ -39,14 +39,15 @@ app.all('*',function (req, res, next) {
     //res.header('Access-Control-Allow-Origin', '*');
     //res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild');
     //res.header('Access-Control-Allow-Origin', req.headers.origin);
-    res.setHeader('Access-Control-Allow-Origin', req.headers.origin);//'http://localhost:3001';
+    //console.log(req.headers);
+    res.setHeader('Access-Control-Allow-Origin', (req.headers.origin)? req.headers.origin: devHostName);//'http://localhost:3001';
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
     res.header('Access-Control-Allow-Credentials', true);
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,UPDATE,OPTIONS');
     if (req.method == 'OPTIONS') {
       var headers = {};
       // IE8 does not allow domains to be specified, just the *
-      headers["Access-Control-Allow-Origin"] = req.headers.origin;
+      headers["Access-Control-Allow-Origin"] = (req.headers.origin)? req.headers.origin: devHostName;
       headers["Access-Control-Allow-Methods"] = "POST, GET, PUT, DELETE, OPTIONS";
       headers["Access-Control-Allow-Credentials"] = true;
       headers["Access-Control-Max-Age"] = '86400'; // 24 hours
