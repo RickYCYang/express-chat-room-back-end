@@ -7,6 +7,9 @@ const chatRoomListener = async(io) => {
 
         // 當發生連線事件
         io.on('connection', async(socket) => {
+            console.log('1. connect');
+            let connectUserName = socket.request._query['userName'];
+            let connectUserSocketId = socket.id;
             await firebaseAdmin.ref(`user`).once("value", (snapshot) => {
                 Object.values(snapshot.val()).forEach(user => {
                     //console.log(user);
@@ -19,17 +22,15 @@ const chatRoomListener = async(io) => {
                         };
                     }
                 });
+                //console.log('connectUserName', connectUserName);
+                if(userList[connectUserName]){
+                    userList[connectUserName].status = 'online';
+                    userList[connectUserName].socketId = connectUserSocketId;
+                    console.log('2. Refresh userList');
+                    io.emit("userList", userList);
+                }
             });
-            let connectUserName = socket.request._query['userName'];
-            let connectUserSocketId = socket.id;
-            //console.log('userList', userList);
-            //console.log('connectUserName', connectUserName);
-            if(userList[connectUserName]){
-                userList[connectUserName].status = 'online';
-                userList[connectUserName].socketId = connectUserSocketId;
-                io.emit("userList", userList);
-            }
-
+            
             socket.on('disconnect', () => {
                 // 有人離線了，扣人
                 let disconnectUserName = socket.request._query['userName'];
