@@ -17,7 +17,7 @@ var cookieParser = require('cookie-parser');
 //Body Parser
 var bodyParser = require("body-parser");
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.urlencoded({extended:true}));
 
 /* Config File */
 var config = require('./config');
@@ -68,6 +68,8 @@ var login = require('./routes/login.js');
 app.use('/login', login);
 var signup = require('./routes/signup.js');
 app.use('/signup', signup);
+var edit = require('./routes/edit.js');
+app.use('/edit', edit);
 var router = require('./routes/index.js');
 app.use('/', router);
 

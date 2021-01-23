@@ -5,19 +5,21 @@ var firebaseAuth = firebase.auth();
 const chatRoomListener = async(io) => {
     let userList = {};
 
-    await firebaseAdmin.ref(`user`).once("value", (snapshot) => {
-        Object.values(snapshot.val()).forEach(user => {
-            //console.log(user);
-            if(user && !userList[user.nickname]){
-                userList[user.nickname] = {
-                    userName: user.nickname,
-                    status: 'offline'
-                };
-            }
-        });
-
         // 當發生連線事件
-        io.on('connection', (socket) => {
+        io.on('connection', async(socket) => {
+            await firebaseAdmin.ref(`user`).once("value", (snapshot) => {
+                Object.values(snapshot.val()).forEach(user => {
+                    //console.log(user);
+                    if(user && !userList[user.nickname]){
+                        userList[user.nickname] = {
+                            //uid: user.uid,
+                            userName: user.nickname,
+                            status: 'offline',
+                            photo: (user.photo)? user.photo: ''
+                        };
+                    }
+                });
+            });
             let connectUserName = socket.request._query['userName'];
             let connectUserSocketId = socket.id;
             //console.log('userList', userList);
@@ -47,17 +49,15 @@ const chatRoomListener = async(io) => {
             
                 if(message.targetUser === 'Public'){
                     //console.log(message);
-                    io.emit("newPublicMessage", message);
+                    io.emit("newMessage", message);
                 }else{
-                    io.to(userList[message.sourceUser].socketId).emit('newPrivateMessage', message);
-                    io.to(userList[message.targetUser].socketId).emit('newPrivateMessage', message);
-                    //console.log(userList[message.sourceUser]);
+                    io.to(userList[message.sourceUser].socketId).emit('newMessage', message);
+                    io.to(userList[message.targetUser].socketId).emit('newMessage', message);
                 }
-                //socket.broadcast.emit('getMessageLess', message)
             });
         });
 
-    });
+   
 }
 
 module.exports = chatRoomListener;
