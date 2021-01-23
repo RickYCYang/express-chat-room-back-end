@@ -12,7 +12,7 @@ var firebaseAdmin = require("../connections/firebase_admin_connect.js");
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, 'public/images/users/');
+        cb(null, 'public/Images/users/');
     },
     // By default, multer removes file extensions so let's add them back
     filename: function(req, file, cb) {

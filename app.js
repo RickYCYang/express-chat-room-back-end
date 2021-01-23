@@ -30,10 +30,12 @@ var jwt = require('jsonwebtoken')
 const prodHostName = 'https://express-chat-room-back-end.herokuapp.com';
 const devHostName = 'http://localhost:3001';
 
-var cors = require('cors');
-app.use(cors({origin: devHostName, credentials: true}));
+/* 2021/01/23 Mark the cors since we use proxy for development mode */
+//var cors = require('cors');
+//app.use(cors({origin: devHostName, credentials: true}));
 
 app.all('*',function (req, res, next) {
+    
     //res.header('Access-Control-Allow-Origin', '*');
     //res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild');
     //res.header('Access-Control-Allow-Origin', req.headers.origin);
@@ -42,21 +44,15 @@ app.all('*',function (req, res, next) {
     res.header('Access-Control-Allow-Credentials', true);
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,UPDATE,OPTIONS');
     if (req.method == 'OPTIONS') {
-      console.log('!OPTIONS');
-      //console.log(req.headers);
       var headers = {};
       // IE8 does not allow domains to be specified, just the *
-      // headers["Access-Control-Allow-Origin"] = req.headers.origin;
       headers["Access-Control-Allow-Origin"] = req.headers.origin;
       headers["Access-Control-Allow-Methods"] = "POST, GET, PUT, DELETE, OPTIONS";
       headers["Access-Control-Allow-Credentials"] = true;
       headers["Access-Control-Max-Age"] = '86400'; // 24 hours
       headers["Access-Control-Allow-Headers"] = "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept";
-      //console.log(headers);
       res.writeHead(200, headers);
       res.end();
-      // res.send(200);
-      // console.log(123);
     }
     else {
       next();
