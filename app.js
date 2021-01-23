@@ -31,7 +31,7 @@ const prodHostName = 'https://express-chat-room-back-end.herokuapp.com';
 const devHostName = 'http://localhost:3001';
 
 var cors = require('cors');
-app.use(cors({origin: devHostName, credentials: true}));
+app.use(cors({origin: prodHostName, credentials: true}));
 
 app.all('*',function (req, res, next) {
     //res.header('Access-Control-Allow-Origin', '*');
