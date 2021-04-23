@@ -1,6 +1,7 @@
 var firebaseAdmin = require('./connections/firebase_admin_connect');
 var firebase = require("./connections/firebase_connect");
 var firebaseAuth = firebase.auth();
+var {encrypt, decrypt} = require("./CryptoService");
 
 const chatRoomListener = async(io) => {
     let userList = {};
@@ -45,15 +46,14 @@ const chatRoomListener = async(io) => {
             socket.on("sendMessage", (message) => {
                 /// 如果 msg 內容鍵值小於 2 等於是訊息傳送不完全
                 // 因此我們直接 return ，終止函式執行。
-                //console.log('msg', message.messageType);
-                if (Object.keys(message).length < 2 || message.message === '') return;
+                const decryptMessage = JSON.parse(decrypt(message));
+                if (Object.keys(decryptMessage).length < 2 || decryptMessage.message === '') return;
             
-                if(message.targetUser === 'Public'){
-                    //console.log(message);
+                if(decryptMessage.targetUser === 'Public'){
                     io.emit("newMessage", message);
                 }else{
-                    io.to(userList[message.sourceUser].socketId).emit('newMessage', message);
-                    io.to(userList[message.targetUser].socketId).emit('newMessage', message);
+                    io.to(userList[decryptMessage.sourceUser].socketId).emit('newMessage', message);
+                    io.to(userList[decryptMessage.targetUser].socketId).emit('newMessage', message);
                 }
             });
         });

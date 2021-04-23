@@ -73,7 +73,6 @@ app.use('/', router);
 app.use(cookieParser());
 /* Middleware to check if the header in user's request contains the authroized token */
 app.use(function (req, res, next) {
-  console.log('middleware', req.cookies);
   var token = req.cookies.token  //req.cookies.token;//req.body.token || req.query.token || req.headers['x-access-token']
   if (token) {
     jwt.verify(token, app.get('secret'), function (err, decoded) {

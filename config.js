@@ -1,3 +1,4 @@
 module.exports = {
-    'secret': 'iloverick'
+    'secret': 'iloverick',
+    'secretKey': 'ThisIsRick'
 }
